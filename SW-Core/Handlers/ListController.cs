@@ -64,7 +64,7 @@ namespace SW_Core.Handlers
 
         public static void ShowSessionList()
         {
-            // if (SESSION_LIST.Count == 0) return;
+            if (SESSION_LIST.Count == 0) return;
 
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine("\n =============== SESSION LIST ===============\n");
@@ -79,8 +79,10 @@ namespace SW_Core.Handlers
 
         public static void ShowGlobalList()
         {
-            Console.ForegroundColor = ConsoleColor.Blue;
 
+            if (GLOBAL_LIST.Count == 0) return;
+
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("\n =============== GLOBAL  LIST ===============\n");
             foreach (var sample in GLOBAL_LIST)
             {

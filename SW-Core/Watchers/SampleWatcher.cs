@@ -15,23 +15,27 @@ namespace SW_Core.Watchers
 
         private string LastSampleName = "";
 
-        private event Action<string, string, WatcherChangeTypes> OnSamplesChanged;
-        public SampleWatcher(string watchDirectory, string fileFormat)
+        private WorkStations workStation;
+
+        private event Action<string, string, WatcherChangeTypes, WorkStations> OnSamplesChanged;
+        public SampleWatcher(string watchDirectory, string fileFormat, WorkStations ws)
         {
             if (!Directory.Exists(watchDirectory)) throw new DirectoryNotFoundException();
 
             DirPath = watchDirectory;
             FileFormat = fileFormat != "" ? fileFormat : FileFormat;
 
+            workStation = ws;
+
             Watch();
         }
 
-        public void Subscribe(Action<string, string, WatcherChangeTypes> func)
+        public void Subscribe(Action<string, string, WatcherChangeTypes, WorkStations> func)
         {
             OnSamplesChanged += func;
         }
 
-        public void Unsubscribe(Action<string, string, WatcherChangeTypes> func)
+        public void Unsubscribe(Action<string, string, WatcherChangeTypes, WorkStations> func)
         {
             OnSamplesChanged -= func;
         }
@@ -58,8 +62,7 @@ namespace SW_Core.Watchers
             
             if(LastSampleName != e.Name)
             {
-                Console.WriteLine($"{e.Name} {e.ChangeType}");
-                OnSamplesChanged?.Invoke(this.GetHashCode().ToString(), e.FullPath, e.ChangeType);
+                OnSamplesChanged?.Invoke(this.GetHashCode().ToString(), e.FullPath, e.ChangeType, workStation);
                 LastSampleName = e.Name;
             }
            

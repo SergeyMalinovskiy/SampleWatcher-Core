@@ -79,7 +79,6 @@ namespace SW_Core.Entities
             string titleCaseTypeName = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(typeName.ToLower());
             Types foundType = (Types)Enum.Parse(typeof(Types), titleCaseTypeName);
 
-            Console.WriteLine($"Detect type is \"{foundType}\"");
             return foundType;
         }
 

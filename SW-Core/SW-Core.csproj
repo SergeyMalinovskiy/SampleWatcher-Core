@@ -6,8 +6,4 @@
     <RootNamespace>SW_Core</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Utils\" />
-  </ItemGroup>
-
 </Project>
