@@ -52,12 +52,23 @@ namespace SW_Core.Entities
         {
             FullPath = fullPath;
             Type = type;
+            Name = GetSampleName(fullPath);
         }
 
         public Sample(string fullPath)
         {
             FullPath = fullPath;
             Type = ParseType(fullPath);
+            Name = GetSampleName(fullPath);
+        }
+
+        private string GetSampleName(string fullPath)
+        {
+            string nameWithoutExtension = Path.GetFileNameWithoutExtension(fullPath);
+            return (Type == Types.Other 
+                        ? nameWithoutExtension 
+                        : nameWithoutExtension.Replace(Type.ToString(), "")
+                    ).Trim(dividers);
         }
 
         private static Types GetTypeByTypeName(string typeName)
