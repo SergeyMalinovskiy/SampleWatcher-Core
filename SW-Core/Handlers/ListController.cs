@@ -7,8 +7,14 @@ namespace SW_Core.Handlers
 {
     static class ListController
     {
-        private static List<Sample> SESSION_LIST = new List<Sample>();
-        private static List<Sample> GLOBAL_LIST  = new List<Sample>();
+        public static List<Sample> SESSION_LIST { get; private set; }
+        public static List<Sample> GLOBAL_LIST  { get; private set; }
+
+        static ListController()
+        {
+            SESSION_LIST = new List<Sample>();
+            GLOBAL_LIST  = new List<Sample>();
+        }
 
         public static bool AddToSession(string sampleFullPath)
         {

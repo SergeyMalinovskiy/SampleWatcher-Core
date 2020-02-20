@@ -12,6 +12,7 @@ namespace SW_Core.Entities
         public string Name = "";
 
         private string _fullPath;
+        public string FileExtension { get; private set; }
 
         public string FullPath
         {
@@ -53,6 +54,7 @@ namespace SW_Core.Entities
             FullPath = fullPath;
             Type = type;
             Name = GetSampleName(fullPath);
+            FileExtension = Path.GetExtension(fullPath);
         }
 
         public Sample(string fullPath)
@@ -60,6 +62,7 @@ namespace SW_Core.Entities
             FullPath = fullPath;
             Type = ParseType(fullPath);
             Name = GetSampleName(fullPath);
+            FileExtension = Path.GetExtension(fullPath);
         }
 
         private string GetSampleName(string fullPath)

@@ -18,8 +18,15 @@ namespace SW_Core
         const string PROJECT_FILE_PATH  = @"D:\AbletonProjects\TESTPROJ_2.als";
         const string DETECT_FILE_FORMAT = "*.wav";
 
+        const string PACK_DIRECTORY = @"D:\AbletonProjects\";
+        const string PACK_NAME = "MyAnotherPaxck";
+
+        static Packer packer;
+
         static void Main(string[] args)
         {
+            packer = new Packer(PACK_DIRECTORY, PACK_NAME);
+
             DawWatcher DAW = new DawWatcher(DAW_NAME);
             ProjectWatcher Project = new ProjectWatcher(PROJECT_FILE_PATH);
             SampleWatcher sampleWatcher = new SampleWatcher(CONSOLIDATE_PATH, DETECT_FILE_FORMAT);
@@ -34,6 +41,15 @@ namespace SW_Core
         public static void OnChangeDAWProcessState(object sender, DawWatcher.DawState incomingState)
         {
             Console.WriteLine($"[{sender}] \t-> State changed to {incomingState}");
+
+            switch (incomingState)
+            {
+                case DawWatcher.DawState.Closed:
+                    packer.FillPack(ListController.SESSION_LIST);
+                    break;
+                default:
+                    break;
+            }
         }
 
         public static void OnSaveProjectFile(string sender, string path, ProjectWatcher.CheckStatus status)
