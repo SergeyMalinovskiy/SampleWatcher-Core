@@ -15,49 +15,37 @@ namespace SW_Core
         const string CONSOLIDATE_PATH   = @"D:\AbletonProjects\Samples\Processed\Consolidate";
         const string RECORD_PATH        = @"D:\AbletonProjects\Samples\Recorded";
 
-        static List<string> SessionPaths = new List<string>();
-        static List<Sample> SessionSamples = new List<Sample>();
+        const string PROJECT_FILE_PATH  = @"D:\AbletonProjects\TESTPROJ_2.als";
+        const string DETECT_FILE_FORMAT = "*.wav";
 
         static void Main(string[] args)
         {
-            Sample.ParseType(@"D:\AbletonProjects\Samples\Processed\Consolidate\koko.nikita.is.moskva.oneLove.kick.test.wav");
-            Console.WriteLine("ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+            DawWatcher DAW = new DawWatcher(DAW_NAME);
+            ProjectWatcher Project = new ProjectWatcher(PROJECT_FILE_PATH);
+            SampleWatcher sampleWatcher = new SampleWatcher(CONSOLIDATE_PATH, DETECT_FILE_FORMAT);
 
-            DawWatcher dawWatcher = new DawWatcher(DAW_NAME);
-            dawWatcher.Subscribe(gg);
-            /*
-            ProjectWatcher project = new ProjectWatcher(@"D:\AbletonProjects\TESTPROJ_2.als");
-            project.Subscribe(gg2);
-            */
-            SampleWatcher sampleWatcher = new SampleWatcher(CONSOLIDATE_PATH, "*.wav");
-            sampleWatcher.Subscribe(gg3);
+            DAW.Subscribe(OnChangeDAWProcessState);            
+            Project.Subscribe(OnSaveProjectFile);
+            sampleWatcher.Subscribe(OnIncomingFileChange);
 
             while (true) Thread.Sleep(100);
         }
 
-        public static void gg(object sender, DawWatcher.DawState incomingState)
+        public static void OnChangeDAWProcessState(object sender, DawWatcher.DawState incomingState)
         {
             Console.WriteLine($"[{sender}] \t-> State changed to {incomingState}");
-
-            SessionSamples = ListController.ConvertToSampleList(SessionPaths);
-
-            if(incomingState == DawWatcher.DawState.Closed)
-            {
-                foreach (Sample item in SessionSamples)
-                {
-                    Console.WriteLine($"{item.Name} -> {item.FullPath}");
-                }
-            }
         }
 
-        public static void gg2(string sender, string path, ProjectWatcher.CheckStatus status)
+        public static void OnSaveProjectFile(string sender, string path, ProjectWatcher.CheckStatus status)
         {
             Console.WriteLine($"[{sender}] \t-> \"{path}\" - {status}");
+
+            ListController.ShowSessionList();
         }
 
-        public static void gg3(string sender, string fullPath, WatcherChangeTypes changeType)
+        public static void OnIncomingFileChange(string sender, string fullPath, WatcherChangeTypes changeType)
         {
-            ListController.AddSample(fullPath, SessionPaths);
+            ListController.AddToSession(fullPath);
         }
     }
 }
