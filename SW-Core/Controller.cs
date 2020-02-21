@@ -1,16 +1,18 @@
-﻿using System;
+﻿//#define DEBUG
+
+using System;
 using System.IO;
 using System.Threading;
-using System.Collections.Generic;
 
 using SW_Core.Watchers;
 using SW_Core.Handlers;
-using SW_Core.Entities;
 using System.Text.RegularExpressions;
 using SW_Core.Utils;
+using System.Collections.Generic;
 
 namespace SW_Core
 {
+    using CLI = CommandLineInterface;
     enum WorkStations
     {
         Ableton,
@@ -20,30 +22,47 @@ namespace SW_Core
     }
     class Controller
     {
-        const string DAW_NAME = "ableton";
-        const string CONSOLIDATE_PATH   = @"D:\AbletonProjects\Samples\Processed\Consolidate";
-        const string RECORD_PATH        = @"D:\AbletonProjects\Samples\Recorded";
-
-        const string PROJECT_FILE_PATH  = @"D:\AbletonProjects\TESTPROJ_2.als";
-        const string DETECT_FILE_FORMAT = "*.wav";
-
-        const string PACK_DIRECTORY = @"D:\AbletonProjects\";
-        const string PACK_NAME = "MyAnotherPaxck";
+        private static string DAW_NAME              = "";
+        private static string CONSOLIDATE_PATH      = "";
+        private static string PACK_DIRECTORY        = "";
+        private static string DETECT_FILE_FORMAT    = "";
 
         static Packer packer;
 
-        static void Main(string[] args)
+        static void Init(string[] args)
         {
             CoreLogger.ShowLogo();
 
-            packer = new Packer(PACK_DIRECTORY, PACK_NAME);
+            CLI.Bind("-w", (string paramValue) => DAW_NAME              = paramValue);
+            CLI.Bind("-s", (string paramValue) => CONSOLIDATE_PATH      = paramValue);
+            CLI.Bind("-d", (string paramValue) => PACK_DIRECTORY        = paramValue);
+            CLI.Bind("-f", (string paramValue) => DETECT_FILE_FORMAT    = paramValue);
+
+            CLI.GetCommandLineParams(args);
+            CLI.ApplyParams();
+
+#if DEBUG
+            Console.WriteLine("params");
+            foreach (var i in args)
+            {
+                Console.WriteLine(i);
+            }
+            Console.WriteLine();
+#endif
+        }
+
+        static void Main(string[] args)
+        {
+            Init(args);
+
+            packer = new Packer(PACK_DIRECTORY);
 
             DawWatcher DAW = new DawWatcher(DAW_NAME);
-            ProjectWatcher Project = new ProjectWatcher(PROJECT_FILE_PATH);
+            // ProjectWatcher Project = new ProjectWatcher(PROJECT_FILE_PATH);
             SampleWatcher sampleWatcher = new SampleWatcher(CONSOLIDATE_PATH, DETECT_FILE_FORMAT, WorkStations.Ableton);
 
             DAW.Subscribe(OnChangeDAWProcessState);            
-            Project.Subscribe(OnSaveProjectFile);
+            // Project.Subscribe(OnSaveProjectFile);
             sampleWatcher.Subscribe(OnIncomingFileChange);
 
             while (true) Thread.Sleep(100);

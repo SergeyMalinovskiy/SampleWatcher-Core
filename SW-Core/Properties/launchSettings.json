@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SW-Core": {
+      "commandName": "Project",
+      "commandLineArgs": "-w Ableton -s D:\\AbletonProjects\\Samples\\Processed\\Consolidate -d D:\\AbletonProjects\\MyAnotherPaxck"
+    }
+  }
+}
