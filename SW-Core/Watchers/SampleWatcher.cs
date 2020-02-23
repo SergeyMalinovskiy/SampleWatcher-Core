@@ -4,6 +4,8 @@ using System.IO;
 using System.Security.Permissions;
 using System.Text;
 
+using SW_Core.Exceptions;
+
 namespace SW_Core.Watchers
 {
     class SampleWatcher
@@ -20,7 +22,8 @@ namespace SW_Core.Watchers
         private event Action<string, string, WatcherChangeTypes, WorkStations> OnSamplesChanged;
         public SampleWatcher(string watchDirectory, string fileFormat, WorkStations ws)
         {
-            if (!Directory.Exists(watchDirectory)) throw new DirectoryNotFoundException();
+            if (!Directory.Exists(watchDirectory))
+                throw new WatchedDirectoryNotFoundException(watchDirectory);
 
             DirPath = watchDirectory;
             FileFormat = fileFormat != "" ? fileFormat : FileFormat;
