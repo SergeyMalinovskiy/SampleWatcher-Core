@@ -83,8 +83,7 @@ namespace SW_Core.Utils
 
         private static string GetParamValue(string param)
         {
-            string m = Regex.Split(param, VALUE_PARAM_PATTERN.ToString())[2];
-
+            string m = param.Split(' ')[1];
             /*
             Console.WriteLine("---23232323>"+param);
             foreach (var a in m)
